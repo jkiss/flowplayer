@@ -59,6 +59,7 @@ package {
             /*
             hls.addEventListener(HLSEvent.PLAYBACK_STATE, _stateHandler);
              */
+            hls.addEventListener(HLSEvent.ID3_UPDATED, _id3Handler);
             video.attachNetStream(hls.stream);
         }
 
@@ -75,6 +76,7 @@ package {
             hls.removeEventListener(HLSEvent.MEDIA_TIME, _mediaTimeHandler);
             hls.removeEventListener(HLSEvent.PLAYBACK_COMPLETE, _completeHandler);
             hls.removeEventListener(HLSEvent.ERROR, _errorHandler);
+            hls.removeEventListener(HLSEvent.ID3_UPDATED, _id3Handler);
             hls.dispose();
             hls = null;
             //player.fire(Flowplayer.UNLOAD, null);
@@ -164,6 +166,11 @@ package {
         protected function _mediaTimeHandler(event : HLSEvent) : void {
             this.pos = event.mediatime.live_sliding_main + event.mediatime.position;
             _checkVideoDimension();
+        };
+
+        protected function _id3Handler(event :HLSEvent) : void {
+           player.debug('ID3 event received', event.ID3Data); //, event);
+           player.fire(Flowplayer.METADATA, event.ID3Data);
         };
 
         protected function _onStageResize(event : Event) : void {
